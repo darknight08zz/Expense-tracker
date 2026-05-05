@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from categorize import ALLOWED_CATEGORIES, categorize_expense, normalize_category
-from store import expenses
+# Changed this line to import the save/load functions instead of the list
+from store import load_expenses, save_expenses 
 
 app = FastAPI(title="AI-Powered Expense Tracker API")
 
@@ -52,6 +53,8 @@ def create_expense(expense_data: ExpenseCreate):
     if not description:
         raise HTTPException(status_code=400, detail="Description must not be empty")
 
+    expenses = load_expenses() # Load existing data
+
     category = categorize_expense(description)
     expense = {
         "id": str(uuid4()),
@@ -62,19 +65,24 @@ def create_expense(expense_data: ExpenseCreate):
     }
 
     expenses.append(expense)
+    save_expenses(expenses) # Save data permanently
+    
     return expense
 
 
 @app.get("/expenses", response_model=List[Expense])
 def get_expenses():
-    return expenses
+    return load_expenses() # Read directly from the file
 
 
 @app.delete("/expenses/{expense_id}")
 def delete_expense(expense_id: str):
+    expenses = load_expenses() # Load existing data
+    
     for index, expense in enumerate(expenses):
         if expense["id"] == expense_id:
             expenses.pop(index)
+            save_expenses(expenses) # Save changes permanently
             return {"message": "Expense deleted successfully"}
 
     raise HTTPException(status_code=404, detail="Expense not found")
@@ -82,6 +90,8 @@ def delete_expense(expense_id: str):
 
 @app.get("/expenses/summary", response_model=ExpenseSummary)
 def get_expense_summary():
+    expenses = load_expenses() # Load existing data
+    
     category_wise = {category: 0.0 for category in ALLOWED_CATEGORIES.values()}
     total_amount = 0.0
 
@@ -90,7 +100,11 @@ def get_expense_summary():
         category = normalize_category(expense.get("category", "Other"))
 
         total_amount += amount
-        category_wise[category] += amount
+        # Ensure the category exists in the dictionary to avoid KeyError
+        if category in category_wise:
+            category_wise[category] += amount
+        else:
+            category_wise[category] = amount
 
     highest_spending_category = None
     if total_amount > 0:

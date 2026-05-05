@@ -1,0 +1,16 @@
+[
+    {
+        "id": "f6302a9b-a9cb-4dd6-8e0e-0ae77694c91b",
+        "amount": 50000.0,
+        "description": "Iphone 15",
+        "category": "Shopping",
+        "created_at": "2026-05-05T12:03:01.597432+00:00"
+    },
+    {
+        "id": "e3e33db0-9c09-4f41-9b7e-76533e8eba2a",
+        "amount": 1500.0,
+        "description": "Dominos",
+        "category": "Food",
+        "created_at": "2026-05-05T12:03:20.315771+00:00"
+    }
+]
