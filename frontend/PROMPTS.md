@@ -19,6 +19,7 @@ Export these:
 ```
 
 *Note: I decided to handle errors directly in each function using try/catch to keep the App controller clean.*
+
 ---
 
 ### Phase 2: Basic Components
@@ -110,6 +111,7 @@ This file should mimic the real api.js but use hardcoded in-memory data for now.
 I need getAllExpenses, addExpense, and deleteExpense exported.
 ```
 
+---
 
 **Phase 4: Refinement & Real Backend**
 
@@ -118,7 +120,7 @@ Once the backend was up, I realized I needed to switch from mock data to real AP
 - Wrap all axios calls in `try/catch` blocks for robust error handling.
 - Log errors to the console and re-throw them to allow the frontend to display appropriate error messages.
 
-
+---
 
 **Phase 5: Styling & Polish**
 
