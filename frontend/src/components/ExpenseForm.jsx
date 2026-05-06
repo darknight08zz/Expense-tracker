@@ -28,43 +28,60 @@ function ExpenseForm({ onAddExpense, isLoading }) {
   };
 
   return (
-    <div className="card">
-      <div className="card-body">
-        <h2 className="card-title">Add New Expense</h2>
+    <div className="card shadow-sm border-0 mb-4">
+      <div className="card-body p-4">
+        <h4 className="card-title mb-4 fw-bold" style={{ color: 'var(--text-main)' }}>
+          ✨ Add New Expense
+        </h4>
         <form onSubmit={handleSubmit}>
-          <div className="row g-3 align-items-start">
+          <div className="row g-3 align-items-end">
             <div className="col-md-4">
+              <label htmlFor="amount" className="form-label small fw-semibold text-muted">Amount (₹)</label>
               <input
                 id="amount"
                 type="number"
-                className="form-control"
-                placeholder="Enter amount (₹)"
+                className="form-control form-control-lg border-light-subtle"
+                placeholder="0.00"
                 value={amount}
                 onChange={(event) => setAmount(event.target.value)}
                 disabled={isLoading}
+                style={{ borderRadius: '10px' }}
               />
             </div>
 
             <div className="col-md-5">
+              <label htmlFor="description" className="form-label small fw-semibold text-muted">Description</label>
               <input
                 id="description"
                 type="text"
-                className="form-control"
-                placeholder="Enter description"
+                className="form-control form-control-lg border-light-subtle"
+                placeholder="What did you spend on?"
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 disabled={isLoading}
+                style={{ borderRadius: '10px' }}
               />
             </div>
 
             <div className="col-md-3">
-              <button type="submit" className="add-btn" disabled={isLoading}>
-                {isLoading ? 'Adding...' : 'Add Expense'}
+              <button type="submit" className="add-btn w-100 py-3" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Categorizing...
+                  </>
+                ) : (
+                  'Add Expense'
+                )}
               </button>
             </div>
           </div>
 
-          {error ? <small className="text-danger d-block mt-2">{error}</small> : null}
+          {error ? (
+            <div className="mt-3 text-danger small d-flex align-items-center">
+              {error}
+            </div>
+          ) : null}
         </form>
       </div>
     </div>

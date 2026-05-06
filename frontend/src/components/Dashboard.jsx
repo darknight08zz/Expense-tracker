@@ -59,83 +59,94 @@ function Dashboard({ expenses }) {
   const categoryEntries = Object.entries(categoryWise);
 
   return (
-    <section className="mb-4">
-      <div className="row g-3">
+    <section className="mb-5">
+      <div className="row g-4">
         <div className="col-md-4">
-          <div className="dashboard-card h-100">
-            <h3>Total Spent</h3>
-            <div style={{ color: '#4CAF50', fontSize: '32px', fontWeight: 'bold' }}>
-              ₹{totalAmount}
+          <div className="dashboard-card">
+            <h3>Total Balance</h3>
+            <div className="fw-bold" style={{ color: 'var(--primary-color)', fontSize: '2.5rem' }}>
+              ₹{totalAmount.toLocaleString()}
             </div>
+            <p className="text-muted small mt-2">Cumulative spending</p>
           </div>
         </div>
 
         <div className="col-md-4">
-          <div className="dashboard-card h-100">
-            <h3>Category Breakdown</h3>
-
-            {categoryEntries.length === 0 ? (
-              <p>No data yet</p>
-            ) : (
-              categoryEntries.map(([category, amount]) => {
-                const categoryStyle = getCategoryColor(category);
-                const progressWidth = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
-
-                return (
-                  <div key={category} className="mb-3 text-start">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <span
-                        className="category-badge"
-                        style={{
-                          backgroundColor: categoryStyle.background,
-                          color: categoryStyle.text,
-                        }}
-                      >
-                        {category}
-                      </span>
-                      <span>₹{amount}</span>
-                    </div>
-
-                    <div className="progress" role="progressbar" aria-label={`${category} spending`}>
-                      <div
-                        className="progress-bar"
-                        style={{ width: `${progressWidth}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-
-        <div className="col-md-4">
-          <div className="dashboard-card h-100">
-            <h3>Highest Spending</h3>
-
+          <div className="dashboard-card text-start">
+            <h3>Top Category</h3>
             {highestCategory ? (
-              <>
-                <span
-                  className="category-badge"
-                  style={{
-                    backgroundColor: getCategoryColor(highestCategory).background,
-                    color: getCategoryColor(highestCategory).text,
+              <div className="d-flex align-items-center gap-3 mt-2">
+                <div 
+                  style={{ 
+                    fontSize: '2.5rem',
+                    backgroundColor: getCategoryColor(highestCategory).backgroundColor + '20',
+                    padding: '10px',
+                    borderRadius: '12px'
                   }}
                 >
-                  {highestCategory}
-                </span>
-                <div className="mt-3" style={{ fontSize: '28px', fontWeight: 'bold' }}>
-                  ₹{highestAmount}
+                  {getCategoryEmoji(highestCategory)}
                 </div>
-              </>
+                <div>
+                  <div className="fw-bold fs-4">{highestCategory}</div>
+                  <div className="text-muted">₹{highestAmount.toLocaleString()}</div>
+                </div>
+              </div>
             ) : (
-              <p>No data yet</p>
+              <p className="text-muted mt-3">No data available</p>
             )}
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="dashboard-card">
+            <h3 className="text-start">Budget Health</h3>
+            <div className="mt-3">
+              {categoryEntries.length === 0 ? (
+                <p className="text-muted">Start adding expenses to see breakdown</p>
+              ) : (
+                categoryEntries.slice(0, 3).map(([category, amount]) => {
+                  const categoryStyle = getCategoryColor(category);
+                  const progressWidth = totalAmount > 0 ? (amount / totalAmount) * 100 : 0;
+
+                  return (
+                    <div key={category} className="mb-3">
+                      <div className="d-flex justify-content-between small mb-1">
+                        <span className="fw-medium">{category}</span>
+                        <span className="text-muted">{Math.round(progressWidth)}%</span>
+                      </div>
+                      <div className="progress" style={{ height: '6px', backgroundColor: '#e2e8f0' }}>
+                        <div
+                          className="progress-bar"
+                          style={{ 
+                            width: `${progressWidth}%`,
+                            backgroundColor: categoryStyle.backgroundColor,
+                            borderRadius: '10px'
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
+}
+
+function getCategoryEmoji(category) {
+  const emojis = {
+    'Food': '🍕',
+    'Transport': '🚗',
+    'Shopping': '🛍️',
+    'Entertainment': '🎬',
+    'Health': '🏥',
+    'Education': '📚',
+    'Other': '📦'
+  };
+  return emojis[category] || '💰';
 }
 
 export default Dashboard;

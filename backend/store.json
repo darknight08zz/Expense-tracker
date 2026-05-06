@@ -12,5 +12,12 @@
         "description": "Dominos",
         "category": "Food",
         "created_at": "2026-05-05T12:03:20.315771+00:00"
+    },
+    {
+        "id": "3f0e16e3-ac88-485c-9450-093a4fb955f9",
+        "amount": 2120.0,
+        "description": "Train to Ayodhya",
+        "category": "Transport",
+        "created_at": "2026-05-05T14:43:27.819614+00:00"
     }
 ]

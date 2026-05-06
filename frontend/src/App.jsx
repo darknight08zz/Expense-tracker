@@ -66,18 +66,19 @@ function App() {
 
   return (
     <div>
-      <nav
-        className="navbar"
-        style={{ backgroundColor: '#4CAF50' }}
-      >
+      <nav className="navbar py-3 mb-2 sticky-top">
         <div className="container">
-          <span className="navbar-brand mb-0 h1 text-white">
+          <span className="navbar-brand mb-0 h1 fw-bold" style={{ color: 'var(--primary-color)', fontSize: '1.5rem' }}>
             💰 Expense Tracker
           </span>
         </div>
       </nav>
 
       <div className="container py-4">
+        <div className="mb-4">
+          <h2 className="fw-bold" style={{ color: 'var(--text-main)' }}>Dashboard</h2>
+        </div>
+
         {error ? (
           <div
             className="alert alert-danger alert-dismissible fade show"
