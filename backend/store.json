@@ -19,5 +19,12 @@
         "description": "Train to Ayodhya",
         "category": "Transport",
         "created_at": "2026-05-05T14:43:27.819614+00:00"
+    },
+    {
+        "id": "41775d85-062b-46ce-a285-7611f50dedb0",
+        "amount": 75000.0,
+        "description": "Bought Laptop",
+        "category": "Shopping",
+        "created_at": "2026-05-06T06:11:50.993717+00:00"
     }
 ]

@@ -10,16 +10,22 @@ function ExpenseForm({ onAddExpense, isLoading }) {
     event.preventDefault();
 
     const trimmedDescription = description.trim();
+    const parsedAmount = Number(amount);
 
-    if (amount === '' || trimmedDescription === '') {
+    if (!trimmedDescription || amount === '') {
       setError('Amount and description are required.');
+      return;
+    }
+
+    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+      setError('Enter an amount greater than 0.');
       return;
     }
 
     setError('');
 
     try {
-      await onAddExpense(amount, trimmedDescription);
+      await onAddExpense(parsedAmount, trimmedDescription);
       setAmount('');
       setDescription('');
     } catch (submitError) {
@@ -28,63 +34,62 @@ function ExpenseForm({ onAddExpense, isLoading }) {
   };
 
   return (
-    <div className="card shadow-sm border-0 mb-4">
-      <div className="card-body p-4">
-        <h4 className="card-title mb-4 fw-bold" style={{ color: 'var(--text-main)' }}>
-          ✨ Add New Expense
-        </h4>
-        <form onSubmit={handleSubmit}>
-          <div className="row g-3 align-items-end">
-            <div className="col-md-4">
-              <label htmlFor="amount" className="form-label small fw-semibold text-muted">Amount (₹)</label>
-              <input
-                id="amount"
-                type="number"
-                className="form-control form-control-lg border-light-subtle"
-                placeholder="0.00"
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-                disabled={isLoading}
-                style={{ borderRadius: '10px' }}
-              />
-            </div>
+    <section className="glass-panel section-panel">
+      <div className="section-heading">
+        <div>
+          <span className="section-kicker">New expense</span>
+          <h2 className="section-title">Add an expense</h2>
+        </div>
+      </div>
 
-            <div className="col-md-5">
-              <label htmlFor="description" className="form-label small fw-semibold text-muted">Description</label>
-              <input
-                id="description"
-                type="text"
-                className="form-control form-control-lg border-light-subtle"
-                placeholder="What did you spend on?"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                disabled={isLoading}
-                style={{ borderRadius: '10px' }}
-              />
-            </div>
-
-            <div className="col-md-3">
-              <button type="submit" className="add-btn w-100 py-3" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    Categorizing...
-                  </>
-                ) : (
-                  'Add Expense'
-                )}
-              </button>
-            </div>
+      <form onSubmit={handleSubmit} className="expense-form">
+        <div className="row g-3 align-items-end">
+          <div className="col-lg-3 col-md-4">
+            <label htmlFor="amount" className="form-label">Amount (INR)</label>
+            <input
+              id="amount"
+              type="number"
+              min="0"
+              step="0.01"
+              inputMode="decimal"
+              className="form-control form-control-lg form-input"
+              placeholder="0.00"
+              value={amount}
+              onChange={(event) => setAmount(event.target.value)}
+              disabled={isLoading}
+            />
           </div>
 
-          {error ? (
-            <div className="mt-3 text-danger small d-flex align-items-center">
-              {error}
-            </div>
-          ) : null}
-        </form>
-      </div>
-    </div>
+          <div className="col-lg-6 col-md-5">
+            <label htmlFor="description" className="form-label">Description</label>
+            <input
+              id="description"
+              type="text"
+              className="form-control form-control-lg form-input"
+              placeholder="Dinner with clients, pharmacy bill, metro recharge..."
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-3">
+            <button type="submit" className="add-btn w-100" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <span className="spinner-ring spinner-ring-sm" aria-hidden="true" />
+                  Categorizing...
+                </>
+              ) : (
+                'Add Expense'
+              )}
+            </button>
+          </div>
+        </div>
+
+        
+      </form>
+    </section>
   );
 }
 

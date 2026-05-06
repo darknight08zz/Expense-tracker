@@ -1,60 +1,96 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import './styles/components.css';
 import Dashboard from './components/Dashboard.jsx';
 import ExpenseForm from './components/ExpenseForm.jsx';
 import ExpenseList from './components/ExpenseList.jsx';
-
-import {
-  addExpense,
-  deleteExpense,
-  getAllExpenses,
-} from './services/api.js';
+import { addExpense, deleteExpense, getAllExpenses } from './services/api.js';
+import { sanitizeExpense } from './utils/expense.js';
 
 function App() {
   const [expenses, setExpenses] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const [error, setError] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const safeExpenses = useMemo(
+    () => expenses.map((expense, index) => sanitizeExpense(expense, index)),
+    [expenses]
+  );
+
+  useEffect(() => {
+    if (!toast) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => setToast(null), 2800);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   const fetchExpenses = async () => {
-    setIsLoading(true);
+    setIsFetching(true);
     setError(null);
 
     try {
       const result = await getAllExpenses();
       setExpenses(result);
     } catch (loadError) {
-      setError('Failed to load expenses');
+      setError('Failed to load expenses. Check that the backend is running.');
     } finally {
-      setIsLoading(false);
+      setIsFetching(false);
     }
   };
 
   const handleAddExpense = async (amount, description) => {
-    setIsLoading(true);
+    setIsSubmitting(true);
     setError(null);
+    setToast({
+      tone: 'progress',
+      message: 'AI categorization in progress...',
+    });
 
     try {
       const newExpense = await addExpense(amount, description);
       setExpenses((currentExpenses) => [...currentExpenses, newExpense]);
+      setToast({
+        tone: 'success',
+        message: 'Expense saved and categorized.',
+      });
     } catch (addError) {
-      setError('Failed to add expense');
+      setError('Failed to add expense.');
+      setToast({
+        tone: 'error',
+        message: 'Could not categorize and save that expense.',
+      });
       throw addError;
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   const handleDeleteExpense = async (id) => {
     setError(null);
+    setPendingDeleteId(id);
 
     try {
       await deleteExpense(id);
       setExpenses((currentExpenses) =>
         currentExpenses.filter((expense) => expense.id !== id)
       );
+      setToast({
+        tone: 'success',
+        message: 'Expense deleted.',
+      });
     } catch (deleteError) {
-      setError('Failed to delete expense');
+      setError('Failed to delete expense.');
+      setToast({
+        tone: 'error',
+        message: 'Delete request failed.',
+      });
+    } finally {
+      setPendingDeleteId(null);
     }
   };
 
@@ -62,72 +98,61 @@ function App() {
     fetchExpenses();
   }, []);
 
-  const showInitialSpinner = isLoading && expenses.length === 0;
+  const showInitialSpinner = isFetching && safeExpenses.length === 0;
 
   return (
-    <div>
-      <nav className="navbar py-3 mb-2 sticky-top">
+    <div className="app-shell">
+      <div className="app-background" aria-hidden="true" />
+
+      <nav className="app-nav sticky-top">
         <div className="container">
-          <span className="navbar-brand mb-0 h1 fw-bold" style={{ color: 'var(--primary-color)', fontSize: '1.5rem' }}>
-            💰 Expense Tracker
-          </span>
+          <div className="nav-brand">
+            <span className="nav-brand-mark" aria-hidden="true">
+              💰
+            </span>
+            <div className="nav-heading">
+              <span className="navbar-brand mb-0" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: '1.8rem', color: 'var(--primary-color)' }}>Expense Tracker</span>
+            </div>
+          </div>
         </div>
       </nav>
 
-      <div className="container py-4">
-        <div className="mb-4">
-          <h2 className="fw-bold" style={{ color: 'var(--text-main)' }}>Dashboard</h2>
-        </div>
+      <main className="container app-main">
+
+
+        {toast ? (
+          <div className={`status-toast status-toast-${toast.tone}`} role="status" aria-live="polite">
+            {toast.tone === 'progress' ? <span className="toast-spinner" aria-hidden="true" /> : null}
+            <span>{toast.message}</span>
+          </div>
+        ) : null}
 
         {error ? (
-          <div
-            className="alert alert-danger alert-dismissible fade show"
-            role="alert"
-          >
-            {error}
-            <button
-              type="button"
-              className="btn-close"
-              aria-label="Close"
-              onClick={() => setError(null)}
-            />
+          <div className="glass-alert" role="alert">
+            <div>{error}</div>
+            <button type="button" className="alert-dismiss" onClick={() => setError(null)} aria-label="Dismiss error">
+              X
+            </button>
           </div>
         ) : null}
 
         {showInitialSpinner ? (
-          <div className="d-flex justify-content-center py-5">
-            <div className="spinner-border text-success" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
+          <div className="page-loader" role="status" aria-live="polite">
+            <div className="spinner-ring" aria-hidden="true" />
+            <p>Loading your expense history...</p>
           </div>
         ) : (
-          <>
-            <div className="row mb-4">
-              <div className="col-12">
-                <Dashboard expenses={expenses} />
-              </div>
-            </div>
-
-            <div className="row mb-4">
-              <div className="col-12">
-                <ExpenseForm
-                  onAddExpense={handleAddExpense}
-                  isLoading={isLoading}
-                />
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-12">
-                <ExpenseList
-                  expenses={expenses}
-                  onDelete={handleDeleteExpense}
-                />
-              </div>
-            </div>
-          </>
+          <div className="content-stack">
+            <Dashboard expenses={safeExpenses} />
+            <ExpenseForm onAddExpense={handleAddExpense} isLoading={isSubmitting} />
+            <ExpenseList
+              expenses={safeExpenses}
+              onDelete={handleDeleteExpense}
+              pendingDeleteId={pendingDeleteId}
+            />
+          </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

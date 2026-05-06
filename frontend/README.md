@@ -1,102 +1,52 @@
-# Frontend – Expense Tracker
+# Expense Tracker Frontend
 
-This directory contains the **React** front‑end of the Expense Tracker application. It provides a sleek, premium UI with glass‑morphism effects, smooth micro‑animations, and a responsive layout that works on desktop and mobile.
+This frontend provides the responsive user interface for the Expense Tracker app. It focuses on fast expense entry, AI-assisted category display, a dashboard for totals and category-wise insights, and a polished glass-morphism presentation across desktop and mobile.
 
----
+## Tech Stack
 
-## 🛠️ Tech Stack
+- React with JSX
+- React Scripts (Create React App)
+- Axios for API requests
+- Bootstrap utilities plus custom CSS
 
-- **React 18** – component‑based UI library.
-- **Vite / Create‑React‑App** – fast development server with hot‑module replacement.
-- **JavaScript (JSX)** – UI logic.
-- **Vanilla CSS** – custom design system (no Tailwind, no external UI frameworks).  Styles are built with CSS variables for colors, spacing, and typography to keep the visual language consistent.
-- **Google Fonts – Inter** – modern, readable typeface.
-- **Axios** – for HTTP communication with the FastAPI backend.
-
----
-
-## 📦 Getting Started
-
-### Prerequisites
-
-- **Node.js** (>=14) and **npm** installed.
-- The backend must be running (see the root `README.md` for backend setup).
-
-### Install dependencies
+## Setup
 
 ```bash
 cd frontend
 npm install
-```
-
-### Development server
-
-```bash
 npm start
 ```
 
-The app will be available at **http://localhost:3000** and automatically proxies API calls to the backend (configured in `vite.config.js` or CRA’s proxy settings).
+The frontend runs on `http://localhost:3000` by default.
 
-### Build for production
+## Folder Structure
+
+```text
+frontend/
+  src/
+    components/   Reusable UI sections such as Dashboard, ExpenseForm, and ExpenseList
+    services/     API client configuration and request helpers
+    styles/       Shared visual tokens and component styling
+    utils/        Expense sanitization and formatting helpers
+```
+
+## API Configuration
+
+- The frontend calls the backend through `REACT_APP_API_URL`.
+- If `REACT_APP_API_URL` is not set, it defaults to `http://localhost:8000`.
+- Example:
 
 ```bash
-npm run build
+REACT_APP_API_URL=http://localhost:8000
 ```
 
-The production assets are emitted to the `dist/` folder. You can serve these static files with any web server or embed them in the FastAPI backend.
+## Frontend Notes
 
----
+- Missing, empty, or malformed category values are normalized to `Other` before rendering.
+- Currency and timestamp display are sanitized on the client to avoid broken UI states.
+- The add-expense flow includes a visible in-progress state while the AI categorization request is running.
 
-## 🎨 Design Highlights
+## Remaining TODOs
 
-- **Glass‑morphism cards** for the dashboard and expense list.
-- **Subtle hover animations** on buttons and inputs.
-- **Responsive grid** that collapses to a single column on narrow screens.
-- **Dynamic loading spinners** appear while AI categorization is in progress.
-
-All styles live in `src/index.css` and component‑specific CSS modules under `src/styles/`.
-
----
-
-## 📂 Project Structure (frontend)
-
-```
-frontend/
-├─ public/                 # static assets (favicon, index.html)
-├─ src/
-│   ├─ components/         # reusable UI components (Dashboard, ExpenseForm, …)
-│   ├─ services/           # API wrapper using axios
-│   ├─ styles/             # CSS files and design tokens
-│   ├─ App.jsx             # root component & routing
-│   ├─ index.js            # entry point, imports global CSS & font
-│   └─ index.css           # global style sheet (variables, resets)
-├─ .gitignore
-├─ package.json
-└─ README.md               # ← you are here!
-```
-
----
-
-## 🚀 Running the Full Stack Locally
-
-1. **Start the backend** (`cd backend && uvicorn main:app --reload`).
-2. **Start the frontend** (`cd frontend && npm start`).
-3. Open `http://localhost:3000` in a browser.
-
-The UI will communicate with the API at `http://localhost:8000/api/...`.
-
----
-
-## 🤝 Contributing to the Frontend
-
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/ui‑enhancement`).
-3. Make changes respecting the existing design system (use the CSS variables defined in `index.css`).
-4. Run `npm test` (if test scripts are added) and ensure the UI remains responsive.
-5. Push and open a Pull Request.
-
----
-
-## 📜 License
-
-The frontend is part of the overall project and is licensed under the **MIT License**.
+- Add automated frontend tests for the loading, malformed-category, and delete states.
+- If deployment needs a different backend origin, wire environment-specific `.env` files for each stage.

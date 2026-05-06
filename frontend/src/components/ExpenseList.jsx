@@ -1,105 +1,89 @@
 import '../styles/components.css';
 import { getCategoryColor } from '../styles/index.js';
+import {
+  formatCurrency,
+  formatExpenseDate,
+  getCategoryEmoji,
+  normalizeCategory,
+} from '../utils/expense.js';
 
-function ExpenseList({ expenses, onDelete }) {
+function ExpenseList({ expenses, onDelete, pendingDeleteId }) {
   return (
-    <section>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h3 className="fw-bold m-0" style={{ color: 'var(--text-main)' }}>
-          Transactions
-        </h3>
-        <span className="badge bg-light text-dark border px-3 py-2 rounded-pill">
-          {expenses.length} Total
-        </span>
+    <section className="glass-panel section-panel">
+      <div className="section-heading section-heading-inline">
+        <div>
+          <span className="section-kicker">History</span>
+          <h2 className="section-title">Transactions</h2>
+        </div>
+        <span className="summary-pill">{expenses.length} total</span>
       </div>
 
       {expenses.length === 0 ? (
         <div className="empty-state">
-          <div className="fs-1 mb-3">📭</div>
-          <h5 className="fw-semibold">No expenses found</h5>
-          <p className="mb-0">Start by adding your first expense above!</p>
+          <div className="empty-state-icon" aria-hidden="true">TX</div>
+          <h3>No expenses found</h3>
+          <p>Start by adding your first expense above.</p>
         </div>
       ) : (
-        <div className="row g-3">
-          {expenses.slice().reverse().map((expense) => {
-            const categoryStyle = getCategoryColor(expense.category);
+        <div className="expense-list-grid">
+          {expenses
+            .slice()
+            .reverse()
+            .map((expense) => {
+              const normalizedCategory = normalizeCategory(expense.category);
+              const categoryStyle = getCategoryColor(normalizedCategory);
+              const isDeleting = pendingDeleteId === expense.id;
 
-            return (
-              <div key={expense.id} className="col-12">
-                <div className="expense-card d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center gap-3">
-                    <div 
-                      className="category-icon" 
-                      style={{ 
-                        backgroundColor: categoryStyle.backgroundColor + '20', 
-                        color: categoryStyle.backgroundColor,
-                        padding: '10px',
-                        borderRadius: '12px',
-                        fontSize: '1.2rem'
+              return (
+                <article key={expense.id} className="expense-card">
+                  <div className="expense-meta">
+                    <div
+                      className="category-icon"
+                      style={{
+                        backgroundColor: categoryStyle.backgroundColor,
+                        color: categoryStyle.color,
                       }}
                     >
-                      {getCategoryEmoji(expense.category)}
+                      {getCategoryEmoji(normalizedCategory)}
                     </div>
-                    <div>
-                      <div className="fw-bold text-dark" style={{ fontSize: '1.1rem' }}>
-                        {expense.description}
-                      </div>
-                      <div className="text-muted small">
-                        {new Date(expense.created_at).toLocaleDateString(undefined, { 
-                          month: 'short', 
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </div>
+
+                    <div className="expense-copy">
+                      <h3>{expense.description}</h3>
+                      <p>{formatExpenseDate(expense.created_at)}</p>
                     </div>
                   </div>
 
-                  <div className="d-flex align-items-center gap-4">
-                    <div className="text-end">
-                      <div className="fw-bold" style={{ color: 'var(--primary-color)', fontSize: '1.2rem' }}>
-                        ₹{Number(expense.amount).toLocaleString()}
-                      </div>
+                  <div className="expense-actions">
+                    <div className="expense-amount-block">
+                      <strong>{formatCurrency(expense.amount)}</strong>
                       <span
-                        className="category-badge mt-1"
+                        className="category-badge"
                         style={{
                           backgroundColor: categoryStyle.backgroundColor,
                           color: categoryStyle.color,
                         }}
                       >
-                        {expense.category}
+                        {normalizedCategory}
                       </span>
                     </div>
+
                     <button
                       type="button"
                       className="delete-btn"
                       onClick={() => onDelete(expense.id)}
-                      title="Delete transaction"
+                      disabled={isDeleting}
+                      aria-label={`Delete ${expense.description}`}
                     >
-                      Delete
+                      {isDeleting ? 'Deleting...' : 'Delete'}
                     </button>
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                </article>
+              );
+            })}
         </div>
       )}
     </section>
   );
-}
-
-function getCategoryEmoji(category) {
-  const emojis = {
-    'Food': '🍕',
-    'Transport': '🚗',
-    'Shopping': '🛍️',
-    'Entertainment': '🎬',
-    'Health': '🏥',
-    'Education': '📚',
-    'Other': '📦'
-  };
-  return emojis[category] || '💰';
 }
 
 export default ExpenseList;
