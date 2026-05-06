@@ -18,16 +18,7 @@ Export these:
 3. deleteExpense(id) -> DELETE /expenses/:id
 ```
 
-Export these 3 functions:
-1. getAllExpenses() — GET request to /expenses, returns array of expenses
-2. addExpense(amount, description) — POST request to /expenses with
-   { amount, description } as body, returns the created expense object
-3. deleteExpense(id) — DELETE request to /expenses/:id
-
-Each expense object looks like:
-{ id, amount, description, category }
-
-Handle errors properly in each function.
+*Note: I decided to handle errors directly in each function using try/catch to keep the App controller clean.*
 ---
 
 ### Phase 2: Basic Components
@@ -112,53 +103,13 @@ I implemented:
 
 My backend wasn't ready yet, so I asked for a mock version.
 
-**Prompt 5:**
-Create a file at src/services/mockApi.js
-
-This file mimics the real api.js but uses hardcoded in-memory data
-instead of real HTTP calls. Use this same export structure:
-
-1. getAllExpenses() — returns a Promise that resolves with this array:
-[
-  { id: "1", amount: 250, description: "Zomato order", category: "Food" },
-  { id: "2", amount: 150, description: "Uber to office", category: "Transport" },
-  { id: "3", amount: 500, description: "Amazon headphones", category: "Shopping" }
-]
-
-2. addExpense(amount, description) — returns a Promise that resolves with:
-{ id: Date.now().toString(), amount, description, category: "Food" }
-
-3. deleteExpense(id) — returns a Promise that resolves with { success: true }
-
-Add a comment at the top: "MOCK FILE — replace imports with api.js when backend is ready"
-```
-
-**Prompt 6.1 (Expanding the mock data):**
+**Prompt 5 (Initial Mock Setup):**
 ```text
-Create a file at src/services/mockApi.js
-
-This file mimics the real api.js but uses hardcoded in-memory data.
-Use this exact export structure:
-
-1. getAllExpenses() — returns a Promise that resolves with this array:
-[
-  { id: "1", amount: 250, description: "Zomato order", category: "Food" },
-  { id: "2", amount: 150, description: "Uber to office", category: "Transport" },
-  { id: "3", amount: 500, description: "Amazon headphones", category: "Shopping" },
-  { id: "4", amount: 300, description: "Movie tickets", category: "Entertainment" },
-  { id: "5", amount: 200, description: "Medicine", category: "Health" }
-]
-
-2. addExpense(amount, description) — returns a Promise that resolves with:
-{ id: Date.now().toString(), amount: Number(amount), description, category: "Food" }
-
-3. deleteExpense(id) — returns a Promise that resolves with { success: true }
-
-Add a comment at the top:
-// MOCK FILE — replace imports with api.js when backend is ready
+Create a file at src/services/mockApi.js.
+This file should mimic the real api.js but use hardcoded in-memory data for now.
+I need getAllExpenses, addExpense, and deleteExpense exported.
 ```
 
----
 
 **Phase 4: Refinement & Real Backend**
 
@@ -169,9 +120,9 @@ Once the backend was up, I realized I needed to switch from mock data to real AP
 
 
 
-### Phase 5: Styling (Making it look "Premium")
+**Phase 5: Styling & Polish**
 
-Now for the fun part. I wanted Bootstrap and some custom CSS to make it look professional.
+For the UI, I used a mix of AI for the initial layouts and manual CSS for the fine-tuning.
 
 **Prompt 6 (Styled Form):**
 ```text
@@ -181,15 +132,11 @@ I also have a custom class "add-btn" I want to use.
 And show "Adding..." when it's loading.
 ```
 
+**Manual Update: Expense List Styling**
+I manually refined the `ExpenseList.jsx` to use the `expense-card` class and added the `category-badge` logic. I ensured the amount displays in the correct green shade (`#4CAF50`) and integrated the `getCategoryColor` utility to make the UI feel dynamic.
 
-**Prompt 7 (Styled List):**
-```text
-Now for the ExpenseList. Each item should be in an "expense-card".
-Show the description in bold and the amount in green (#4CAF50).
-Add a category badge too. I'll pass a getCategoryColor function for the colors.
-```
 
-**Prompt 8 (Final Dashboard):**
+**Prompt 7 (Final Dashboard):**
 ```text
 Final piece: the Dashboard.
 I need 3 cards: Total Spent, Category Breakdown (with progress bars), and Highest Spending.
@@ -197,20 +144,12 @@ Use useMemo for the math part. Normalize category names to title case.
 If no expenses, just show "No data yet".
 ```
 
-### Final Polish: Connecting everything
 
-One last push to get the main `App.jsx` connected to the mock data while I finalise the backend.
-
-**Prompt 9 (Final Polish):**
+**Prompt 8 (Final Polish):**
 ```text
 Okay, let's update App.jsx one last time.
-Import the mock API functions.
-I need state for expenses, isLoading, and error.
+I need robust state management for expenses, isLoading, and error.
 Make a fetchExpenses function and call it in useEffect.
-Also, add a nice Navbar at the top with a money emoji 💰 and title "Expense Tracker".
-Put everything in a Bootstrap container.
+Also, add a premium Navbar at the top with a money emoji 💰 and title "Expense Tracker".
+Put all components in a Bootstrap container for a clean layout.
 ```
-
-
-*Note: This file is a snapshot of the development process. Most of the heavy lifting was done with AI, but I had to tweak the CSS and ports manually to get it just right.*
-
