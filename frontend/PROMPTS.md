@@ -1,4 +1,4 @@
-# Dev Log: Project Prompts & Iterations
+# Expense Tracker Frontend: Prompts & Iterations
 
 This file tracks how I built the frontend, including the prompts I sent to AI and some notes on what I had to change manually.
 
