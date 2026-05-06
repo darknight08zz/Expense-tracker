@@ -15,29 +15,28 @@ Create a simple Python file that acts as in-memory storage for the expense track
 - No classes, no imports needed.
 
 *Add a comment at the top:*
-`# In-memory storage — data lives here while server runs`
+`# In-memory storage - data lives here while server runs`
 
 ---
 
 ## Prompt 2: AI Categorization Helper
 **File:** `backend/categorize.py`
 
-This file handles calling the Claude AI API to auto-categorize expense descriptions.
+This file handles calling the Gemini AI API to auto-categorize expense descriptions.
 
-**Tech:** Anthropic Python SDK, python-dotenv
+**Tech:** Google GenerativeAI, python-dotenv
 
 **Requirements:**
 
-1. Load `ANTHROPIC_API_KEY` from `.env` using `load_dotenv()`
+1. Load `GEMINI_API_KEY` from `.env` using `load_dotenv()`
 2. Define `VALID_CATEGORIES` list:
    ```
    ["Food", "Transport", "Shopping", "Entertainment", "Health", "Education", "Other"]
    ```
 3. Export one function: `categorize_expense(description: str) -> str`
-   - Create an `Anthropic` client using the API key from env
+   - Create an `Google GenerativeAI` client using the API key from env
    - Call `client.messages.create()` with:
-     - model: `claude-haiku-20240307`
-     - max_tokens: `10`
+     - model: `gemini-flash-latest`
      - This exact prompt:
        ```
        Categorize this expense into one word only from:
@@ -55,7 +54,7 @@ This file handles calling the Claude AI API to auto-categorize expense descripti
 ## Prompt 3: Main FastAPI Application
 **File:** `backend/main.py`
 
-This is the core of the backend — FastAPI app with all 4 routes.
+This is the core of the backend - FastAPI app with all 4 routes.
 
 **Tech:** FastAPI, Pydantic, uuid, datetime, CORS middleware
 
