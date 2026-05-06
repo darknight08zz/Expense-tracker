@@ -131,7 +131,7 @@ For the UI, I used a mix of AI for the initial layouts and manual CSS for the fi
 Let's make the ExpenseForm look better. Use Bootstrap cards.
 Put the amount, description, and button in one row with 3 columns.
 I also have a custom class "add-btn" I want to use.
-And show "Adding..." when it's loading.
+And show "Categorizing..." when it's loading.
 ```
 
 **Manual Update: Expense List Styling**
