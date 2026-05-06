@@ -18,10 +18,10 @@ GEMINI_API_KEY=your_gemini_api_key_here
 Start the server:
 
 ```bash
-uvicorn main:app --reload --port 5000
+uvicorn main:app --reload --port 8000
 ```
 
-The API runs on `http://localhost:5000`.
+The API runs on `http://localhost:8000`.
 
 ## Endpoints
 
@@ -92,4 +92,4 @@ Response:
 Categorize this expense into one word only from: Food, Transport, Shopping, Entertainment, Health, Education, Other. Expense: {description}. Reply with one word only.
 ```
 
-If Claude fails or no API key is configured, the category falls back to `Other`.
+If AI fails or no API key is configured, the category falls back to `Other`.
