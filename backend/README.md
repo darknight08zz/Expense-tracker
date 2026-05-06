@@ -9,7 +9,7 @@ cd backend
 pip install -r requirements.txt
 ```
 
-Create `.env` from `.env.example` and add your Anthropic API key:
+Create `.env` from `.env.example` and add your Gemini API key:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
