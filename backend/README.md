@@ -12,7 +12,7 @@ pip install -r requirements.txt
 Create `.env` from `.env.example` and add your Anthropic API key:
 
 ```env
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 Start the server:
