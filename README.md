@@ -12,6 +12,13 @@ A modern **full‑stack Expense Tracker** built with a **FastAPI** backend and a
 - **Responsive UI** with a premium, glass‑morphism design.
 - **Live reloading** for both backend (`uvicorn --reload`) and frontend (`npm start`).
 
+## 📸 Screenshots
+
+| Dashboard View | Add Expense View |
+|:---:|:---:|
+| ![Dashboard](./frontend/public/IMG%201.png) | ![Add Expense](./frontend/public/IMG%202.png) |
+
+
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
@@ -88,7 +95,3 @@ This project is licensed under the **MIT License** – see the `LICENSE` file fo
 
 ---
 
-## 📞 Contact
-
-- GitHub: [darknight08zz](https://github.com/darknight08zz)
-- Email: youremail@example.com
